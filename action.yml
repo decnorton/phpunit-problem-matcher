@@ -4,3 +4,5 @@ author: 'decnorton'
 runs:
   using: 'node12'
   main: 'lib/main.js'
+branding:
+  icon: check-square
