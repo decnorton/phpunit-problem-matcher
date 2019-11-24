@@ -6,3 +6,4 @@ runs:
   main: 'lib/main.js'
 branding:
   icon: check-square
+  color: purple
