@@ -1,27 +1,32 @@
-import {wait} from '../src/wait'
-import * as process from 'process'
-import * as cp from 'child_process'
+import { run } from '../src/main'
 import * as path from 'path'
 
-test('throws invalid number', async() => {
-    const input = parseInt('foo', 10);
-    await expect(wait(input)).rejects.toThrow('milleseconds not a number');
-});
+describe('Matchers', () => {
+    let originalLogMethod: any;
+    let outputData: any[] = [];
 
-test('wait 500 ms', async() => {
-    const start = new Date();
-    await wait(500);
-    const end = new Date();
-    var delta = Math.abs(end.getTime() - start.getTime());
-    expect(delta).toBeGreaterThan(450);
-});
+    beforeAll(() => {
+        originalLogMethod = console.log;
+        console['log'] = jest.fn(inputs => outputData.push(inputs));
+    });
 
-// shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-    process.env['INPUT_MILLISECONDS'] = '500';
-    const ip = path.join(__dirname, '..', 'lib', 'main.js');
-    const options: cp.ExecSyncOptions = {
-        env: process.env
-    };
-    console.log(cp.execSync(`node ${ip}`, options).toString());
+    beforeEach(() => {
+        outputData = [];
+    });
+
+    afterAll(() => {
+        console['log'] = originalLogMethod;
+    });
+
+    it('Add matchers', async () => {
+        await run();
+
+        expect(outputData).toEqual([
+            `##[add-matcher]${path.join(
+                __dirname,
+                '..',
+                '.github/matchers/phpunit.json'
+            )}`
+        ]);
+    });
 });

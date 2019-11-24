@@ -1,16 +1,10 @@
 import * as core from '@actions/core';
-import {wait} from './wait'
+import * as path from 'path';
 
-async function run() {
+export async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
-
-    core.debug((new Date()).toTimeString())
-    await wait(parseInt(ms, 10));
-    core.debug((new Date()).toTimeString())
-
-    core.setOutput('time', new Date().toTimeString());
+      const matchersPath = path.join(__dirname, '..', '.github/matchers');
+      console.log(`##[add-matcher]${path.join(matchersPath, 'phpunit.json')}`);
   } catch (error) {
     core.setFailed(error.message);
   }
